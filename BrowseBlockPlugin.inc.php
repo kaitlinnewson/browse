@@ -44,10 +44,19 @@ class BrowseBlockPlugin extends BlockPlugin {
 
 		$requestedCategoryPath = null;
 		$args = $router->getRequestedArgs($request);
-		if ($router->getRequestedPage($request) . '/' . $router->getRequestedOp($request) == 'catalog/category') $requestedCategoryPath = reset($args);
+
+		$pageName = 'catalog';
+		if (Application::getName() == 'ops') {
+			$pageName = 'preprints';
+		}
+
+		if ($router->getRequestedPage($request) . '/' . $router->getRequestedOp($request) == "$pageName/category") {
+			$requestedCategoryPath = reset($args);
+		}
 		$templateMgr->assign(array(
 			'browseBlockSelectedCategory' => $requestedCategoryPath,
 			'browseCategories' => $categoryDao->getByContextId($context->getId())->toArray(),
+			'pageName' => $pageName,
 		));
 		return parent::getContents($templateMgr);
 	}
